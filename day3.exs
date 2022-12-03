@@ -6,9 +6,8 @@ defmodule Day3 do
 
   def part1() do
     @input
-    |> Enum.map(&Enum.split(&1, div(length(&1), 2) + rem(length(&1), 2)))
-    |> Enum.map(fn {x, y} -> {MapSet.new(x), MapSet.new(y)} end)
-    |> Enum.map(fn {x, y} -> MapSet.intersection(x, y) end)
+    |> Enum.map(&Enum.split(&1, div(length(&1), 2)))
+    |> Enum.map(fn {x, y} -> MapSet.intersection(MapSet.new(x), MapSet.new(y)) end)
     |> priority_sum()
   end
 
@@ -26,15 +25,12 @@ defmodule Day3 do
     x
     |> Enum.map(&MapSet.to_list(&1))
     |> Enum.map(&List.first(&1))
-    |> Enum.map(
-      &if &1 < 91 do
-        &1 - 38
-      else
-        &1 - 96
-      end
-    )
+    |> Enum.map(&priority(&1))
     |> Enum.sum()
   end
+
+  defp priority(x) when x < 91, do: x - 38
+  defp priority(x), do: x - 96
 end
 
 Day3.part1() |> IO.puts()
