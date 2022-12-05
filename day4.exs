@@ -6,26 +6,24 @@ defmodule Day4 do
 
   def part1() do
     @input
-    |> Enum.map(fn [a, b, x, y] ->
+    |> Enum.count(fn [a, b, x, y] ->
       case Enum.sort([a, b, x, y]) do
-        [^a, ^x, ^y, ^b] -> 1
-        [^x, ^a, ^b, ^y] -> 1
-        _ -> 0
+        [^a, ^x, ^y, ^b] -> true
+        [^x, ^a, ^b, ^y] -> true
+        _ -> false
       end
     end)
-    |> Enum.sum()
   end
 
   def part2() do
     @input
-    |> Enum.map(fn [a, b, x, y] ->
+    |> Enum.count(fn [a, b, x, y] ->
       case Enum.sort([a, b, x, y]) do
-        [^a, ^b, ^x, ^y] when b != x -> 0
-        [^x, ^y, ^a, ^b] when y != a -> 0
-        _ -> 1
+        [^a, ^b, ^x, ^y] when b != x -> false
+        [^x, ^y, ^a, ^b] when y != a -> false
+        _ -> true
       end
     end)
-    |> Enum.sum()
   end
 end
 
