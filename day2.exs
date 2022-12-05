@@ -1,6 +1,6 @@
 defmodule Day2 do
   @input File.stream!("day2.input", [encoding: :utf8], :line)
-         |> Stream.map(&String.trim(&1))
+         |> Stream.map(&String.trim/1)
          |> Enum.into([])
 
   def part1() do

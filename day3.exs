@@ -1,7 +1,7 @@
 defmodule Day3 do
   @input File.stream!("day3.input", [encoding: :utf8], :line)
-         |> Enum.map(&String.trim(&1))
-         |> Enum.map(&String.to_charlist(&1))
+         |> Enum.map(&String.trim/1)
+         |> Enum.map(&String.to_charlist/1)
          |> Enum.into([])
 
   def part1() do
@@ -13,7 +13,7 @@ defmodule Day3 do
 
   def part2() do
     @input
-    |> Enum.map(&MapSet.new(&1))
+    |> Enum.map(&MapSet.new/1)
     |> Enum.chunk_every(3)
     |> Enum.map(fn [a, b, c] ->
       MapSet.intersection(MapSet.intersection(a, b), c)
@@ -23,9 +23,9 @@ defmodule Day3 do
 
   defp priority_sum(x) do
     x
-    |> Enum.map(&MapSet.to_list(&1))
-    |> Enum.map(&List.first(&1))
-    |> Enum.map(&priority(&1))
+    |> Enum.map(&MapSet.to_list/1)
+    |> Enum.map(&List.first/1)
+    |> Enum.map(&priority/1)
     |> Enum.sum()
   end
 
