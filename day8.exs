@@ -30,7 +30,7 @@ defmodule Day8 do
   end
 
   defp calc_viz(trees) do
-    Enum.reduce(trees, {-1, []}, fn y, acc -> {max(y, elem(acc, 0)), [ y > elem(acc, 0) | elem(acc, 1) ]} end)
+    Enum.reduce(trees, {-1, []}, fn y, {max_height, list} -> {max(y, max_height), [ y > max_height | list ]} end)
     |> elem(1)
     |> Enum.reverse()
   end
@@ -43,7 +43,7 @@ defmodule Day8 do
   end
 
   defp calc_scene(trees) do
-    Enum.reduce(trees, {Dist.new(), []}, fn y, acc -> {Dist.update_dist(elem(acc, 0), y), [ Dist.block_dist(elem(acc, 0), y) | elem(acc, 1) ]} end)
+    Enum.reduce(trees, {Dist.new(), []}, fn y, {dists, list} -> {Dist.update_dist(dists, y), [ Dist.block_dist(dists, y) | list ]} end)
     |> elem(1)
     |> Enum.reverse()
   end
