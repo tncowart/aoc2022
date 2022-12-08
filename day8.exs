@@ -1,38 +1,60 @@
-defmodule Day8 do
-  @input_h File.stream!("day8.input", [encoding: :utf8], :line)
-           |> Enum.map(&String.to_charlist/1)
-           |> Enum.map(fn x -> Enum.map(x, &(&1 - ?0)) end)
+defmodule Dist do
+  def new(), do: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-  @input_hr File.stream!("day8.input", [encoding: :utf8], :line)
-           |> Enum.map(&String.to_charlist/1)
-           |> Enum.map(&Enum.reverse/1)
-           |> Enum.map(fn x -> Enum.map(x, &(&1 - ?0)) end)
-
-  @input_v Enum.zip(File.stream!("day8.input", [encoding: :utf8], :line)
-           |> Enum.map(&String.to_charlist/1)
-           |> Enum.map(fn x -> Enum.map(x, &(&1 - ?0)) end))
-           |> Enum.map(&Tuple.to_list/1)
-
-  @input_vr Enum.zip(File.stream!("day8.input", [encoding: :utf8], :line)
-           |> Enum.map(&String.to_charlist/1)
-           |> Enum.map(&Enum.reverse/1)
-           |> Enum.map(fn x -> Enum.map(x, &(&1 - ?0)) end))
-           |> Enum.map(&Tuple.to_list/1)
-
-  def compute_visibility([head | tail]) do
-
-  end
-  def compute_visibility([tail]) do
-    Enum.map(tail, 1)
+  def block_dist(dists, height) do
+    dists |> Enum.drop(height) |> Enum.sort() |> List.first()
   end
 
-  def part1() do
-    @input_h
-  end
-  def part2() do
-
+  def update_dist(dists, curr_height) do
+    List.replace_at(Enum.map(dists, &(&1 + 1)), curr_height, 1)
   end
 end
 
-Day8.part1() |> IO.inspect()
-Day8.part2() |> IO.inspect()
+defmodule Day8 do
+  @input_h File.stream!("day8.input", [encoding: :utf8], :line)
+           |> Enum.map(&String.trim/1)
+           |> Enum.map(&String.to_charlist/1)
+           |> Enum.map(fn x -> Enum.map(x, &(&1 - ?0)) end)
+
+  defp calc_vals(input, calc_fun) do
+    h = input |> Enum.map(calc_fun)
+    hr = input |> Enum.map(&Enum.reverse/1) |> Enum.map(calc_fun) |> Enum.map(&Enum.reverse/1)
+    v = input |> transpose() |> Enum.map(calc_fun) |> transpose()
+    vr = input |> transpose() |> Enum.map(&Enum.reverse/1) |> Enum.map(calc_fun) |> Enum.map(&Enum.reverse/1) |> transpose()
+
+    [h, hr, v, vr]
+  end
+
+  defp transpose(lists) do
+    lists |> Enum.zip() |> Enum.map(&Tuple.to_list/1)
+  end
+
+  defp calc_viz(trees) do
+    Enum.reduce(trees, {-1, []}, fn y, acc -> {max(y, elem(acc, 0)), [ y > elem(acc, 0) | elem(acc, 1) ]} end)
+    |> elem(1)
+    |> Enum.reverse()
+  end
+
+  def part1() do
+    (Enum.zip(calc_vals(@input_h, &calc_viz/1))
+    |> Enum.map(fn {w, x, y, z} -> Enum.zip([w, x, y, z]) |> Enum.map(fn {a, b, c, d} -> a or b or c or d end) end)
+    |> Enum.map(fn x -> Enum.count(x, &(&1)) end))
+    |> Enum.sum()
+  end
+
+  defp calc_scene(trees) do
+    Enum.reduce(trees, {Dist.new(), []}, fn y, acc -> {Dist.update_dist(elem(acc, 0), y), [ Dist.block_dist(elem(acc, 0), y) | elem(acc, 1) ]} end)
+    |> elem(1)
+    |> Enum.reverse()
+  end
+
+  def part2() do
+    (Enum.zip(calc_vals(@input_h, &calc_scene/1))
+    |> Enum.map(fn {w, x, y, z} -> Enum.zip([w, x, y, z]) |> Enum.map(fn {a, b, c, d} -> a * b * c * d end) end)
+    |> Enum.map(&Enum.max/1))
+    |> Enum.max()
+  end
+end
+
+Day8.part1() |> IO.puts()
+Day8.part2() |> IO.puts()
