@@ -1,11 +1,11 @@
-defmodule Dist do
+defmodule Dists do
   def new(), do: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-  def block_dist(dists, height) do
+  def blocking_dist(dists, height) do
     dists |> Enum.drop(height) |> Enum.sort() |> List.first()
   end
 
-  def update_dist(dists, curr_height) do
+  def update_dists(dists, curr_height) do
     List.replace_at(Enum.map(dists, &(&1 + 1)), curr_height, 1)
   end
 end
@@ -43,7 +43,7 @@ defmodule Day8 do
   end
 
   defp calc_scene(trees) do
-    Enum.reduce(trees, {Dist.new(), []}, fn y, {dists, list} -> {Dist.update_dist(dists, y), [ Dist.block_dist(dists, y) | list ]} end)
+    Enum.reduce(trees, {Dists.new(), []}, fn y, {dists, list} -> {Dists.update_dists(dists, y), [ Dists.blocking_dist(dists, y) | list ]} end)
     |> elem(1)
     |> Enum.reverse()
   end
