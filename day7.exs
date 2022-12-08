@@ -10,8 +10,8 @@ defmodule Day7 do
   end
 
   def update_map_size(map, _, []), do: map
-  def update_map_size(map, size, [loc_head | loc_tail]) do
-    update_map_size(update_in(map[Enum.join([loc_head | loc_tail], "/")], &(&1 + size)), size, loc_tail)
+  def update_map_size(map, size, loc_list) do
+    update_map_size(update_in(map[Enum.join(loc_list, "/")], &(&1 + size)), size, tl(loc_list))
   end
 
   def build_fs_map([_ | rest]), do: build_fs_map(rest, %{"" => 0}, [""])
@@ -36,7 +36,7 @@ defmodule Day7 do
 end
 
 file = File.stream!("day7.input", encoding: :utf8) |> Stream.map(&String.trim/1) |> Enum.to_list()
-fs_tree = Day7.build_fs_map(file)
+fs_map = Day7.build_fs_map(file)
 
-Day7.part1(fs_tree) |> IO.puts()
-Day7.part2(fs_tree) |> IO.puts()
+Day7.part1(fs_map) |> IO.puts()
+Day7.part2(fs_map) |> IO.puts()
