@@ -31,7 +31,7 @@ defmodule Day10 do
   end
 
   def calc_pixel(step, x) when (rem((step - 1), 40)) in (x - 1)..(x + 1), do: '#'
-  def calc_pixel(_step, _x), do: '.'
+  def calc_pixel(_step, _x), do: ' '
 
   def part2() do
     @input
